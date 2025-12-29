@@ -173,6 +173,25 @@ a:hover{color:var(--accent)}
   flex-wrap:wrap;
   margin: 12px 0 16px;
 }
+
+.pager{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin: 18px 0 6px;
+}
+.pagerBtn{
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--text);
+}
+.pagerBtn:hover{border-color: rgba(106,169,255,.35)}
+.pagerBtn.disabled{opacity:.45; pointer-events:none}
+.pagerInfo{color:var(--muted); font-size:12px; padding:6px 8px}
 .select, .input{
   padding:10px 12px;
   border-radius:12px;
@@ -271,7 +290,7 @@ select optgroup {
 
 /* ✅ footer 고정은 메인(index)에서만 */
 body.withFooter{
-  padding-bottom: 70px; /* footer 높이에 맞춰 60~90px 조절 */
+  padding-bottom: calc(220px + env(safe-area-inset-bottom)); /* footer 높이에 맞춰 여유 */
 }
 
 body.withFooter .footer{
@@ -280,4 +299,6 @@ body.withFooter .footer{
   right: 0;
   bottom: 0;
   z-index: 10;
+  background: rgba(11,15,20,.86);
+  backdrop-filter: blur(10px);
 }
