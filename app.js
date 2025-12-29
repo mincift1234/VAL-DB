@@ -396,6 +396,16 @@ function renderGearList(category){
   $b.addEventListener("change", push);
 }
 
+function platformLabel(p){
+  switch((p || "").toLowerCase()){
+    case "chzzk": return "치지직";
+    case "youtube": return "유튜브";
+    case "twitch": return "트위치";
+    case "soop": return "SOOP";
+    default: return p || "링크";
+  }
+}
+
 function renderPersonDetail(id){
   const p = state.people.find(x => x.id === id);
   if (!p){
@@ -437,6 +447,19 @@ function renderPersonDetail(id){
       </a>
     `;
   }).join("");
+
+  const links = Array.isArray(p.links) ? p.links : [];
+  const linksHtml = links.length
+    ? links.map(l => {
+        const plat = escapeHtml(platformLabel(l.platform || "link"));
+        const label = escapeHtml(l.label || "");
+        const url = escapeHtml(l.url || "");
+        const text = label ? `${plat} · ${label}` : plat;
+        return url
+          ? `<a class="tag" href="${url}" target="_blank" rel="noreferrer">${text} ↗</a>`
+          : `<span class="tag">${text}</span>`;
+      }).join("")
+    : "";
 
   const sources = Array.isArray(p.sources) ? p.sources : [];
   const sourceHtml = sources.length
@@ -483,9 +506,16 @@ function renderPersonDetail(id){
           <div class="list">${gearPairs}</div>
         </div>
       </div>
+      <div class="hr"></div>
+      <div class="title">방송/채널 링크</div>
+      <div class="list">
+        ${links.length
+          ? `<div class="tags" style="margin-top:2px; flex-wrap:wrap;">${linksHtml}</div>`
+          : `<div class="panel small">링크(미작성).</div>`
+        }
+      </div>
 
       <div class="hr"></div>
-
       <div class="title">프로/스트리머의 그 외 정보들</div>
       <div class="list">${sourceHtml}</div>
     </div>
