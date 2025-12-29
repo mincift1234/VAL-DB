@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin · VAL DB</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./admin.css" />
+</head>
+<body class="adminPage">
+  <header class="topbar">
+    <a class="brand" href="./index.html#/">
+      VAL DB
+      <span class="tag" style="margin-left:8px;">ADMIN</span>
+    </a>
+
+    <nav class="nav">
+      <a href="./index.html#/people">프로/스트리머</a>
+      <a href="./index.html#/gear">장비</a>
+      <a class="active" href="./admin.html">관리</a>
+    </nav>
+
+    <div class="searchWrap" style="max-width:420px;">
+      <div class="row" style="justify-content:flex-end; gap:10px;">
+        <button id="btnLogin" class="btn">구글 로그인</button>
+        <button id="btnLogout" class="btn ghost">로그아웃</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="panel">
+      <div class="h1">관리자 페이지</div>
+      <p class="p">장비/사람 데이터를 등록·수정·삭제합니다. 오른쪽 위에서 로그인하세요.</p>
+
+      <div class="adminStatus">
+        <div class="kv" style="margin-top:0;">
+          <div class="k">로그인 상태</div><div class="v" id="authState">확인 중...</div>
+          <div class="k">내 UID</div><div class="v" id="uidBox">—</div>
+        </div>
+        <p class="small">총 관리자가 이 UID를 등록하면 <b>게시글 수정 가능</b>하게 만들 수 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="gear">장비 등록</button>
+      <button class="tab" data-tab="people">사람 등록</button>
+      <button class="tab" data-tab="manage">수정/삭제</button>
+    </div>
+
+    <!-- GEAR -->
+    <section id="tab-gear" class="tabPanel">
+      <div class="panel">
+        <div class="h1">장비 등록</div>
+        <p class="p">장비 모델(브랜드+모델명)을 먼저 등록하고, 사람 문서에서 gear ID로 연결합니다.</p>
+
+        <div class="formGrid">
+          <div>
+            <label class="lbl">문서 ID (비우면 자동 생성)</label>
+            <input id="gearId" class="input" placeholder="예: gear_mouse_gpxsl2_black" />
+            <div class="small">ID를 고정하면 연결/관리하기 편합니다.</div>
+          </div>
+
+          <div>
+            <label class="lbl">카테고리</label>
+            <select id="gearCategory" class="select">
+              <option value="mouse">마우스</option>
+              <option value="mousepad">마우스패드</option>
+              <option value="keyboard">키보드</option>
+              <option value="headset">헤드셋/이어폰</option>
+              <option value="monitor">모니터</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="lbl">브랜드</label>
+            <input id="gearBrand" class="input" placeholder="예: Logitech" />
+          </div>
+
+          <div>
+            <label class="lbl">모델</label>
+            <input id="gearModel" class="input" placeholder="예: G Pro X Superlight 2 (Black)" />
+          </div>
+
+          <div class="span2">
+            <label class="lbl">imageUrl (선택)</label>
+            <input id="gearImageUrl" class="input" placeholder="https://..." />
+          </div>
+
+          <div class="span2">
+            <label class="lbl">specs (JSON) (선택)</label>
+            <textarea id="gearSpecs" class="textarea" rows="6" placeholder='예: {"hz":360,"resolution":"1920x1080"}'></textarea>
+            <div class="small">JSON 형식이 아니면 저장이 거부됩니다.</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnGearSave" class="btn">장비 저장</button>
+          <button id="btnGearReset" class="btn ghost">폼 초기화</button>
+        </div>
+
+        <div id="gearMsg" class="msg"></div>
+      </div>
+    </section>
+
+    <!-- PEOPLE -->
+    <section id="tab-people" class="tabPanel hidden">
+      <div class="panel">
+        <div class="h1">사람 등록</div>
+        <p class="p">선수/스트리머 문서를 만들고, 위에서 등록한 gear 문서 ID를 연결합니다.</p>
+
+        <div class="formGrid">
+          <div>
+            <label class="lbl">문서 ID (비우면 자동 생성)</label>
+            <input id="peopleId" class="input" placeholder="예: tenz / aspas / kim_denmo" />
+          </div>
+
+          <div>
+            <label class="lbl">구분</label>
+            <select id="peopleType" class="select">
+              <option value="pro">프로</option>
+              <option value="streamer">스트리머</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="lbl">닉네임</label>
+            <input id="peopleNickname" class="input" placeholder="예: TenZ" />
+          </div>
+
+          <div>
+            <label class="lbl">팀/소속</label>
+            <input id="peopleOrg" class="input" placeholder="예: Sentinels" />
+          </div>
+
+          <div>
+            <label class="lbl">역할</label>
+            <select id="peopleRole" class="select">
+              <option value="">(미기재)</option>
+              <option value="Duelist">타격대</option>
+              <option value="Initiator">척후대</option>
+              <option value="Controller">전략가</option>
+              <option value="Sentinel">감시자</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="lbl">국가</label>
+            <input id="peopleCountry" class="input" placeholder="예: KR / US / JP" />
+          </div>
+
+          <div class="span2">
+            <label class="lbl">아바타 URL (선택)</label>
+            <input id="peopleAvatarUrl" class="input" placeholder="https://..." />
+          </div>
+
+          <div>
+            <label class="lbl">DPI</label>
+            <input id="peopleDpi" class="input" type="number" placeholder="예: 800" />
+          </div>
+
+          <div>
+            <label class="lbl">Sens</label>
+            <input id="peopleSens" class="input" type="number" step="0.001" placeholder="예: 0.35" />
+          </div>
+
+          <div class="span2">
+            <label class="lbl">해상도</label>
+            <input id="peopleRes" class="input" placeholder='예: 1920x1080' />
+          </div>
+
+          <div class="span2">
+            <div class="panel" style="margin:0; padding:12px;">
+              <div class="title">장비 연결</div>
+              <p class="small" style="margin:6px 0 12px;">드롭다운은 등록된 gear 문서에서 자동 로딩됩니다.</p>
+
+              <div class="formGrid">
+                <div>
+                  <label class="lbl">마우스</label>
+                  <select id="peopleGearMouse" class="select"></select>
+                </div>
+                <div>
+                  <label class="lbl">마우스패드</label>
+                  <select id="peopleGearMousepad" class="select"></select>
+                </div>
+                <div>
+                  <label class="lbl">키보드</label>
+                  <select id="peopleGearKeyboard" class="select"></select>
+                </div>
+                <div>
+                  <label class="lbl">헤드셋/이어폰</label>
+                  <select id="peopleGearHeadset" class="select"></select>
+                </div>
+                <div class="span2">
+                  <label class="lbl">모니터</label>
+                  <select id="peopleGearMonitor" class="select"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="span2">
+  <div class="panel" style="margin:0; padding:12px;">
+    <div class="title">출처(Sources)</div>
+    <p class="small" style="margin:6px 0 12px;">
+      JSON 붙여넣기 대신 폼으로 추가합니다. 저장 시 sources 배열이 자동 생성됩니다.
+    </p>
+
+    <div class="formGrid">
+      <div>
+        <label class="lbl">type</label>
+        <select id="srcType" class="select">
+          <option value="youtube">youtube</option>
+          <option value="twitch">twitch</option>
+          <option value="twitter">twitter/x</option>
+          <option value="interview">interview</option>
+          <option value="command">command</option>
+          <option value="other">other</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="lbl">date</label>
+        <input id="srcDate" class="input" placeholder="YYYY-MM-DD (비우면 오늘)" />
+      </div>
+
+      <div class="span2">
+        <label class="lbl">url</label>
+        <input id="srcUrl" class="input" placeholder="https://..." />
+      </div>
+
+      <div class="span2">
+        <label class="lbl">note</label>
+        <input id="srcNote" class="input" placeholder="예: 방송 !장비 커맨드 / 유튜브 설명란 기준" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnSrcAdd" class="btn">출처 추가</button>
+      <button id="btnSrcClear" class="btn ghost">입력칸 초기화</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="title" style="margin-top:6px;">현재 출처 목록</div>
+    <div id="srcList" class="list"></div>
+
+    <!-- ✅ 호환/백업용: 내부적으로 JSON으로 동기화해두는 숨김 textarea -->
+    <textarea id="peopleSources" class="textarea" rows="5" style="display:none;"></textarea>
+  </div>
+</div>
+
+
+        <div class="actions">
+          <button id="btnPeopleSave" class="btn">사람 저장</button>
+          <button id="btnPeopleReset" class="btn ghost">폼 초기화</button>
+        </div>
+
+        <div id="peopleMsg" class="msg"></div>
+      </div>
+    </section>
+
+    <!-- MANAGE -->
+    <section id="tab-manage" class="tabPanel hidden">
+      <div class="panel">
+        <div class="h1">수정/삭제</div>
+        <p class="p">기존 문서를 클릭하면 폼에 로드됩니다. 저장하면 업데이트, 삭제하면 제거됩니다.</p>
+
+        <div class="split">
+          <div>
+            <div class="title">프로/스트리머</div>
+            <input id="managePeopleSearch" class="input" placeholder="검색: 닉네임/소속" />
+            <div id="peopleList" class="list"></div>
+          </div>
+
+          <div>
+            <div class="title">장비</div>
+            <input id="manageGearSearch" class="input" placeholder="검색: 브랜드/모델" />
+            <div id="gearList" class="list"></div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="actions">
+          <button id="btnDeleteSelected" class="btn danger">선택 항목 삭제</button>
+          <div class="small">삭제는 되돌릴 수 없습니다. (진짜로)</div>
+        </div>
+
+        <div id="manageMsg" class="msg"></div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <div class="panel">
+      <div class="h1">로그</div>
+      <div id="log" class="panel small" style="white-space:pre-wrap; margin:0;"></div>
+    </div>
+  </main>
+
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>

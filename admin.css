@@ -1,0 +1,133 @@
+/* admin.css */
+.tabs{
+  display:flex;
+  gap:10px;
+  margin: 10px 0 14px;
+  flex-wrap:wrap;
+}
+
+.tab{
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color: var(--muted);
+  cursor:pointer;
+}
+
+.tab.active{
+  color: var(--text);
+  border-color: rgba(106,169,255,.45);
+  box-shadow: 0 0 0 3px rgba(106,169,255,.10);
+}
+
+.tabPanel.hidden{display:none}
+
+.formGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.formGrid .span2{grid-column: span 2;}
+
+.lbl{
+  display:block;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color: var(--text);
+  outline:none;
+  resize: vertical;
+}
+
+.textarea:focus{
+  border-color: rgba(106,169,255,.55);
+  box-shadow: 0 0 0 3px rgba(106,169,255,.12);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top: 14px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  font-weight: 700;
+}
+
+.btn:hover{
+  border-color: rgba(106,169,255,.35);
+}
+
+.btn.ghost{
+  background: transparent;
+}
+
+.btn.danger{
+  border-color: rgba(255,95,95,.35);
+  background: rgba(255,95,95,.10);
+}
+.btn.danger:hover{
+  border-color: rgba(255,95,95,.55);
+}
+
+.msg{
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.adminStatus b{color: var(--text);}
+
+@media (max-width: 720px){
+  .formGrid{grid-template-columns: 1fr;}
+  .formGrid .span2{grid-column: span 1;}
+}
+
+/* 관리자 페이지에서는 그라데이션 제거 (단색 배경) */
+body.adminPage{
+  background: var(--bg) !important;
+}
+
+/* 관리자 페이지: 섹션 제목/설명과 입력칸 사이 간격 미세 조정 */
+.tabPanel .h1{
+  margin-bottom: 8px;   /* 기존보다 살짝만 */
+}
+
+.tabPanel .p{
+  margin-bottom: 14px;  /* 설명 ↔ 입력칸 간 여유 */
+}
+
+/* "프로/스트리머", "장비" 같은 소제목 아래 여백 */
+.tabPanel .title{
+  margin-bottom: 10px;
+}
+
+/* 검색 input이 바로 붙어 보이지 않게 */
+.tabPanel .title + .input{
+  margin-top: 6px;
+}
+
+/* 관리자 페이지: 입력칸 아래 안내 문구 간격 통일 */
+.tabPanel .input + .small{
+  margin-top: 6px;
+}

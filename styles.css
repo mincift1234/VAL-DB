@@ -1,0 +1,283 @@
+:root{
+  --bg:#0b0f14;
+  --panel:#0f1621;
+  --panel2:#111c2a;
+  --text:#e6edf3;
+  --muted:#9fb0c0;
+  --line:#1f2a3a;
+  --accent:#6aa9ff;
+  --danger:#ff5f5f;
+
+  --r:14px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Paperlogy', -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  background: radial-gradient(1200px 600px at 30% -10%, rgba(106,169,255,.22), transparent 55%),
+              radial-gradient(1000px 500px at 90% 10%, rgba(255,95,95,.12), transparent 55%),
+              var(--bg);
+  color:var(--text);
+}
+
+a{color:inherit; text-decoration:none}
+a:hover{color:var(--accent)}
+
+.topbar{
+  position:sticky; top:0;
+  display:flex; align-items:center; gap:16px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  background: rgba(11,15,20,.78);
+  backdrop-filter: blur(10px);
+  z-index:5;
+}
+
+.brand{
+  font-weight:800;
+  letter-spacing:.2px;
+  padding:8px 10px;
+  border-radius:10px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.nav{display:flex; gap:12px}
+.nav a{
+  padding:8px 10px;
+  border-radius:10px;
+  color:var(--muted);
+}
+.nav a.active{color:var(--text); background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.06)}
+
+.searchWrap{margin-left:auto; max-width:360px; width:100%}
+.searchWrap input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--text);
+  outline:none;
+}
+.searchWrap input::placeholder{color:rgba(159,176,192,.75)}
+.searchWrap input:focus{border-color: rgba(106,169,255,.55); box-shadow: 0 0 0 3px rgba(106,169,255,.12)}
+
+.container{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.h1{
+  font-size: 22px;
+  margin: 14px 0 10px;
+}
+.p{
+  color:var(--muted);
+  margin: 0 0 16px;
+  line-height:1.55;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+
+.card{
+  grid-column: span 4;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius: var(--r);
+  padding: 14px;
+  overflow:hidden;
+}
+
+.card:hover{
+  border-color: rgba(106,169,255,.35);
+  box-shadow: 0 14px 40px rgba(0,0,0,.35);
+}
+
+.row{display:flex; align-items:center; gap:12px}
+.avatar{
+  width:44px; height:44px; border-radius:12px;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  overflow:hidden; flex:0 0 auto;
+  display:grid; place-items:center;
+}
+.avatar img{width:100%; height:100%; object-fit:cover}
+.title{
+  font-weight:800;
+  margin:0;
+}
+.sub{
+  margin:2px 0 0;
+  color:var(--muted);
+  font-size: 13px;
+}
+
+.tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.tag{
+  font-size:12px;
+  color:var(--muted);
+  padding:6px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.panel{
+  background: rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius: var(--r);
+  padding: 14px;
+}
+
+.split{
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 14px;
+}
+
+.kv{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 12px;
+  margin-top: 10px;
+}
+.kv div{padding:10px 10px; border-radius: 12px; border:1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.03)}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700}
+
+.list{
+  display:flex; flex-direction:column; gap:10px; margin-top:10px;
+}
+.item{
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.06);
+  background: rgba(255,255,255,.03);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.item .left{display:flex; flex-direction:column; gap:2px}
+.item .right{color:var(--muted); font-size:13px}
+
+.filters{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin: 12px 0 16px;
+}
+.select, .input{
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--text);
+  outline:none;
+}
+.select:focus, .input:focus{border-color: rgba(106,169,255,.55); box-shadow: 0 0 0 3px rgba(106,169,255,.12)}
+
+.small{color:var(--muted); font-size:12px}
+.hr{height:1px; background: var(--line); margin: 14px 0}
+
+.footer{
+  padding: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  text-align:center;
+}
+
+@media (max-width: 980px){
+  .card{grid-column: span 6;}
+  .split{grid-template-columns: 1fr;}
+}
+@media (max-width: 560px){
+  .topbar{flex-wrap:wrap}
+  .searchWrap{order:10; margin-left:0; max-width:none}
+  .card{grid-column: span 12;}
+  .kv{grid-template-columns: 1fr}
+}
+
+/* 홈 카드 그리드(없으면 추가) */
+.gridCards{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:12px;
+  margin-top:10px;
+}
+@media (max-width: 900px){
+  .gridCards{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px){
+  .gridCards{ grid-template-columns: 1fr; }
+}
+
+/* formGrid(없으면 추가) */
+.formGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:12px;
+  margin-top:10px;
+}
+.formGrid .span2{ grid-column: span 2; }
+@media (max-width: 720px){
+  .formGrid{ grid-template-columns: 1fr; }
+  .formGrid .span2{ grid-column: span 1; }
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./fonts/Paperlogy-6SemiBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ✅ 드롭다운에서 "펼쳐졌을 때 옵션 목록"만 가독성 개선 */
+select option,
+select optgroup {
+  background: var(--panel);   /* 어두운 배경 */
+  color: var(--text);         /* 흰 글씨 */
+}
+
+/* 사람 상세 상단: 이름 아래 정보 간격 개선 */
+.panel .h1 + .small {
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+/* 이름/팀/포지션/국적 줄과 태그 사이 여백 */
+.panel .small + .tags {
+  margin-top: 10px;
+}
+
+/* small 텍스트 자체 가독성 미세 개선 */
+.panel .small {
+  letter-spacing: 0.2px;
+}
+
+/* 조건 없음 메시지는 그리드 전체 폭 사용 */
+.grid > .panel {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+/* ✅ footer 고정은 메인(index)에서만 */
+body.withFooter{
+  padding-bottom: 70px; /* footer 높이에 맞춰 60~90px 조절 */
+}
+
+body.withFooter .footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
