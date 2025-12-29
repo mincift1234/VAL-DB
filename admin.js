@@ -70,12 +70,21 @@ const $btnSrcAdd = document.getElementById("btnSrcAdd");
 const $btnSrcClear = document.getElementById("btnSrcClear");
 const $srcList = document.getElementById("srcList");
 
+// Links UI (방송/채널 링크)
+const $linkPlatform = document.getElementById("linkPlatform");
+const $linkLabel = document.getElementById("linkLabel");
+const $linkUrl = document.getElementById("linkUrl");
+const $btnLinkAdd = document.getElementById("btnLinkAdd");
+const $btnLinkClear = document.getElementById("btnLinkClear");
+const $linkList = document.getElementById("linkList");
+const $peopleLinks = document.getElementById("peopleLinks");
 
 let currentUser = null;
 let cacheGear = [];
 let cachePeople = [];
 let selected = { type: null, id: null }; // {type: "gear"|"people", id}
 let sourcesState = []; // ✅ 사람 폼의 sources를 여기서 관리
+let linksState = [];   // ✅ 사람 폼의 방송/채널 링크 관리
 
 function escapeHtml(s=""){
   return String(s)
@@ -268,6 +277,68 @@ function renderManageLists(){
   });
 }
 
+function syncLinksTextarea(){
+  if (!$peopleLinks) return;
+  $peopleLinks.value = JSON.stringify(linksState, null, 2);
+}
+
+function platformLabel(p){
+  switch((p || "").toLowerCase()){
+    case "chzzk": return "치지직";
+    case "youtube": return "유튜브";
+    case "twitch": return "트위치";
+    case "soop": return "SOOP";
+    default: return p || "other";
+  }
+}
+
+function renderLinks(){
+  if (!$linkList) return;
+
+  if (!Array.isArray(linksState) || linksState.length === 0){
+    $linkList.innerHTML = `<div class="panel small">링크가 없습니다. (선택)</div>`;
+    syncLinksTextarea();
+    return;
+  }
+
+  $linkList.innerHTML = linksState.map((l, idx) => {
+    const platform = escapeHtml(l.platform || "other");
+    const label = escapeHtml(l.label || "");
+    const url = escapeHtml(l.url || "");
+
+    return `
+      <div class="item">
+        <div class="left">
+          <div class="title">${escapeHtml(platformLabel(platform))}${label ? ` · ${label}` : ""}</div>
+          ${url ? `<div class="small">${url}</div>` : `<div class="sub">(URL 없음)</div>`}
+        </div>
+        <div class="right" style="display:flex; gap:10px; align-items:center;">
+          ${url ? `<a href="${url}" target="_blank" rel="noreferrer">열기</a>` : "—"}
+          <button class="btn ghost" data-link-del="${idx}" style="padding:8px 10px;">삭제</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  $linkList.querySelectorAll("[data-link-del]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.linkDel);
+      if (!Number.isFinite(i)) return;
+      linksState.splice(i, 1);
+      renderLinks();
+      setMsg($peopleMsg, "링크가 삭제되었습니다.");
+    });
+  });
+
+  syncLinksTextarea();
+}
+
+function clearLinkInputs(){
+  if ($linkPlatform) $linkPlatform.value = "chzzk";
+  if ($linkLabel) $linkLabel.value = "";
+  if ($linkUrl) $linkUrl.value = "";
+}
+
 function loadSelectedIntoForm(){
   if (!selected.type || !selected.id) return;
 
@@ -312,7 +383,10 @@ function loadSelectedIntoForm(){
     $peopleGearMonitor.value = p.gear?.monitor || "";
 
     sourcesState = Array.isArray(p.sources) ? p.sources : [];
-renderSources();
+    renderSources();
+
+    linksState = Array.isArray(p.links) ? p.links : [];
+    renderLinks();
 
     setMsg($peopleMsg, `로드됨: people/${p.id}`);
   }
@@ -435,6 +509,7 @@ $btnPeopleSave.addEventListener("click", async () => {
     const res = $peopleRes.value.trim() || null;
 
     const sources = Array.isArray(sourcesState) ? sourcesState : [];
+    const links = Array.isArray(linksState) ? linksState : [];
 
     const gear = {
       mouse: $peopleGearMouse.value || null,
@@ -449,6 +524,7 @@ $btnPeopleSave.addEventListener("click", async () => {
       type,
       org,
       role,
+      links,
       country,
       avatarUrl: avatarUrl || "",
       settings: { dpi, sens, res },
@@ -502,6 +578,31 @@ $btnSrcClear.addEventListener("click", () => {
   setMsg($peopleMsg, "출처 입력칸이 초기화되었습니다.");
 });
 
+$btnLinkAdd?.addEventListener("click", () => {
+  try{
+    const platform = ($linkPlatform?.value || "other").trim();
+    const label = ($linkLabel?.value || "").trim();
+    const url = ($linkUrl?.value || "").trim();
+
+    if (!url) throw new Error("URL은 필수입니다.");
+    if (!isValidUrl(url)) throw new Error("URL 형식이 올바르지 않습니다.");
+
+    const dupe = (Array.isArray(linksState) ? linksState : []).some(x => (x.url || "") === url);
+    if (dupe) throw new Error("이미 같은 URL이 등록되어 있습니다.");
+
+    linksState.unshift({ platform, url, label });
+    renderLinks();
+    setMsg($peopleMsg, "✅ 링크가 추가되었습니다.");
+    clearLinkInputs();
+  }catch(e){
+    setMsg($peopleMsg, `❌ ${e.message}`, true);
+  }
+});
+
+$btnLinkClear?.addEventListener("click", () => {
+  clearLinkInputs();
+  setMsg($peopleMsg, "링크 입력칸이 초기화되었습니다.");
+});
 
 $btnPeopleReset.addEventListener("click", () => {
   $peopleId.value = "";
@@ -516,8 +617,11 @@ $btnPeopleReset.addEventListener("click", () => {
   $peopleRes.value = "";
   $peopleSources.value = "[]";
   sourcesState = [];
-renderSources();
+  renderSources();
 
+  if ($peopleLinks) $peopleLinks.value = "[]";
+  linksState = [];
+  renderLinks();
 
   $peopleGearMouse.value = "";
   $peopleGearMousepad.value = "";
