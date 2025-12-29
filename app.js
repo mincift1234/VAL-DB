@@ -8,7 +8,8 @@ const ROLE_KR = {
   Duelist: "타격대",
   Initiator: "척후대",
   Controller: "전략가",
-  Sentinel: "감시자"
+  Sentinel: "감시자",
+  Flex: "플렉스"
 };
 
 const TYPE_KR = {
@@ -175,11 +176,11 @@ function renderPeopleList(){
         <option value="streamer" ${type==="streamer"?"selected":""}>스트리머</option>
       </select>
       <select class="select" id="peopleRole">
-        <option value="all" ${role==="all"?"selected":""}>모든 역할</option>
         <option value="Duelist" ${role==="Duelist"?"selected":""}>타격대</option>
         <option value="Initiator" ${role==="Initiator"?"selected":""}>척후대</option>
         <option value="Controller" ${role==="Controller"?"selected":""}>전략가</option>
         <option value="Sentinel" ${role==="Sentinel"?"selected":""}>감시자</option>
+        <option value="Flex" ${role==="Flex"?"selected":""}>플렉스</option>
       </select>
     </div>
 
