@@ -323,9 +323,15 @@ function renderGearList(category){
   const q = (params.get("q") || state.globalQuery || "").trim().toLowerCase();
   const brand = params.get("brand") || "all";
 
+  // pagination
+  const PER_PAGE_GEAR = 9; // 3x3 기준
+  const pageRaw = parseInt(params.get("page") || "1", 10);
+  const page = Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+
   const inCat = state.gear.filter(g => g.category === category);
 
-  const brands = [...new Set(inCat.map(g => (g.brand||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const brands = [...new Set(inCat.map(g => (g.brand||"").trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b));
 
   const filtered = inCat.filter(g => {
     const hay = `${g.brand||""} ${g.model||""}`.toLowerCase();
@@ -333,6 +339,18 @@ function renderGearList(category){
     const okBrand = brand === "all" || (g.brand||"") === brand;
     return okQ && okBrand;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE_GEAR));
+  const curPage = Math.min(Math.max(1, page), totalPages);
+  const pageItems = filtered.slice((curPage - 1) * PER_PAGE_GEAR, curPage * PER_PAGE_GEAR);
+
+  const makeHash = (nextPage) => {
+    const sp = new URLSearchParams();
+    if (q) sp.set("q", q);
+    if (brand !== "all") sp.set("brand", brand);
+    if (nextPage > 1) sp.set("page", String(nextPage));
+    return `#/gear/${category}${sp.toString() ? "?" + sp.toString() : ""}`;
+  };
 
   $view.innerHTML = `
     <div class="h1">${gearLabel(category)}</div>
@@ -347,7 +365,13 @@ function renderGearList(category){
     </div>
 
     <div class="grid">
-      ${filtered.map(g => gearCard(g)).join("") || `<div class="panel">조건에 맞는 장비가 없어요.</div>`}
+      ${pageItems.map(g => gearCard(g)).join("") || `<div class="panel">조건에 맞는 장비가 없어요.</div>`}
+    </div>
+
+    <div class="row" style="justify-content:center; gap:10px; margin:14px 0 6px;">
+      <a class="tag" href="${makeHash(Math.max(1, curPage-1))}" style="opacity:${curPage<=1?0.45:1}; pointer-events:${curPage<=1?'none':'auto'};">← 이전</a>
+      <span class="tag">페이지 ${curPage} / ${totalPages}</span>
+      <a class="tag" href="${makeHash(Math.min(totalPages, curPage+1))}" style="opacity:${curPage>=totalPages?0.45:1}; pointer-events:${curPage>=totalPages?'none':'auto'};">다음 →</a>
     </div>
   `;
 
@@ -358,6 +382,7 @@ function renderGearList(category){
     const sp = new URLSearchParams();
     if ($q.value.trim()) sp.set("q", $q.value.trim());
     if ($b.value !== "all") sp.set("brand", $b.value);
+    // ✅ 필터 변경 시 1페이지로 리셋
     location.hash = `#/gear/${category}${sp.toString() ? "?" + sp.toString() : ""}`;
   };
 
@@ -581,7 +606,7 @@ async function boot(){
     $view.innerHTML = `
       <div class="panel">
         <div class="h1">Firebase 연결 오류</div>
-        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해주세요. 콘솔 로그도 같이 확인하면 원인 찾기 쉽습니다.</p>
+        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해줘. 콘솔 로그도 같이 확인하면 원인 찾기 쉬워.</p>
         <div class="small">${escapeHtml(err?.message || String(err))}</div>
       </div>
     `;
