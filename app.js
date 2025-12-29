@@ -1,5 +1,5 @@
 // app.js
-import { db, fs } from "./firebase.js";
+import { db, fs, auth } from "./firebase.js";
 
 const $view = document.getElementById("view");
 const $globalSearch = document.getElementById("globalSearch");
@@ -24,6 +24,31 @@ const state = {
   gearById: new Map(),
   globalQuery: ""
 };
+
+// Admin link: 관리자만 "관리" 메뉴 보이게 (Firestore admins/{uid} allowlist)
+const $adminLink = document.querySelector('.nav a[href="./admin.html"], .nav a.mutedLink[href="./admin.html"]');
+if ($adminLink) $adminLink.style.display = "none"; // 기본은 숨김(깜빡임 방지)
+
+async function isAdmin(uid){
+  try{
+    const snap = await fs.getDoc(fs.doc(db, "admins", uid));
+    return snap.exists();
+  }catch(_e){
+    return false;
+  }
+}
+
+fs.onAuthStateChanged(auth, async (user) => {
+  if (!$adminLink) return;
+  if (!user){
+    $adminLink.style.display = "none";
+    return;
+  }
+  const ok = await isAdmin(user.uid);
+  $adminLink.style.display = ok ? "" : "none";
+});
+
+
 
 function escapeHtml(s=""){
   return String(s)
@@ -556,7 +581,7 @@ async function boot(){
     $view.innerHTML = `
       <div class="panel">
         <div class="h1">Firebase 연결 오류</div>
-        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해줘. 콘솔 로그도 같이 확인하면 원인 찾기 쉬워.</p>
+        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해주세요. 콘솔 로그도 같이 확인하면 원인 찾기 쉽습니다.</p>
         <div class="small">${escapeHtml(err?.message || String(err))}</div>
       </div>
     `;
