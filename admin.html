@@ -253,6 +253,55 @@
   </div>
 </div>
 
+<!-- ✅ 방송/채널 링크 (여러 개) -->
+<div class="span2">
+  <div class="hr"></div>
+</div>
+
+<div class="span2">
+  <div class="panel" style="margin:0; padding:12px;">
+    <div class="title">방송/채널 링크</div>
+    <p class="small" style="margin:6px 0 12px;">
+      한 사람에 여러 개 링크를 등록할 수 있습니다. (치지직/유튜브/트위치/SOOP 등)
+    </p>
+
+    <div class="formGrid">
+      <div>
+        <label class="lbl">platform</label>
+        <select id="linkPlatform" class="select">
+          <option value="chzzk">chzzk</option>
+          <option value="youtube">youtube</option>
+          <option value="twitch">twitch</option>
+          <option value="soop">soop</option>
+          <option value="other">other</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="lbl">label (선택)</label>
+        <input id="linkLabel" class="input" placeholder="예: 채널명 / @handle / 아이디" />
+      </div>
+
+      <div class="span2">
+        <label class="lbl">url</label>
+        <input id="linkUrl" class="input" placeholder="https://..." />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnLinkAdd" class="btn">링크 추가</button>
+      <button id="btnLinkClear" class="btn ghost">입력칸 초기화</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="title" style="margin-top:6px;">현재 링크 목록</div>
+    <div id="linkList" class="list"></div>
+
+    <!-- ✅ 호환/백업용: 내부적으로 JSON으로 동기화해두는 숨김 textarea -->
+    <textarea id="peopleLinks" class="textarea" rows="5" style="display:none;"></textarea>
+  </div>
+</div>
 
         <div class="actions">
           <button id="btnPeopleSave" class="btn">사람 저장</button>
