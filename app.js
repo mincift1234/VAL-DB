@@ -26,8 +26,11 @@ const state = {
 };
 
 // Admin link: 관리자만 "관리" 메뉴 보이게 (Firestore admins/{uid} allowlist)
-const $adminLink = document.querySelector('.nav a[href="./admin.html"], .nav a.mutedLink[href="./admin.html"]');
-if ($adminLink) $adminLink.style.display = "none"; // 기본은 숨김(깜빡임 방지)
+// ✅ href가 ./admin.html, /admin.html, admin.html 등으로 바뀌어도 잡히도록 suffix 매칭
+const $adminLinks = Array.from(document.querySelectorAll('.nav a[href$="admin.html"]'));
+
+// 기본은 숨김(깜빡임 방지)
+$adminLinks.forEach(a => { a.style.display = "none"; });
 
 async function isAdmin(uid){
   try{
@@ -39,13 +42,18 @@ async function isAdmin(uid){
 }
 
 fs.onAuthStateChanged(auth, async (user) => {
-  if (!$adminLink) return;
+  // 링크가 아예 없으면 아무것도 안 함
+  if (!$adminLinks.length) return;
+
+  // 로그인 안 했으면 무조건 숨김
   if (!user){
-    $adminLink.style.display = "none";
+    $adminLinks.forEach(a => { a.style.display = "none"; });
     return;
   }
+
+  // 로그인 했어도 admins/{uid} 없으면 숨김
   const ok = await isAdmin(user.uid);
-  $adminLink.style.display = ok ? "" : "none";
+  $adminLinks.forEach(a => { a.style.display = ok ? "" : "none"; });
 });
 
 function escapeHtml(s=""){
@@ -604,7 +612,7 @@ async function boot(){
     $view.innerHTML = `
       <div class="panel">
         <div class="h1">Firebase 연결 오류</div>
-        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해줘. 콘솔 로그도 같이 확인하면 원인 찾기 쉬워.</p>
+        <p class="p">firebase.js 설정값(프로젝트 ID 등)을 확인해주세요. 콘솔 로그도 같이 확인하면 원인 찾기 쉽습니다.</p>
         <div class="small">${escapeHtml(err?.message || String(err))}</div>
       </div>
     `;
