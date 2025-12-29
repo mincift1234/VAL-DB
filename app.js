@@ -156,6 +156,11 @@ function renderPeopleList(){
   const role = params.get("role") || "all";
   const type = params.get("type") || "all";
 
+  // pagination
+  const PER_PAGE = 9; // 3x3 기준
+  const pageRaw = parseInt(params.get("page") || "1", 10);
+  const page = Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+
   const filtered = state.people.filter(p => {
     const hay = `${p.nickname||""} ${p.org||""} ${p.role||""}`.toLowerCase();
     const okQ = !q || hay.includes(q);
@@ -163,6 +168,19 @@ function renderPeopleList(){
     const okType = type === "all" || (p.type || "").toLowerCase() === type.toLowerCase();
     return okQ && okRole && okType;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const curPage = Math.min(Math.max(1, page), totalPages);
+  const pageItems = filtered.slice((curPage - 1) * PER_PAGE, curPage * PER_PAGE);
+
+  const makeHash = (nextPage) => {
+    const sp = new URLSearchParams();
+    if (q) sp.set("q", q);
+    if (type !== "all") sp.set("type", type);
+    if (role !== "all") sp.set("role", role);
+    if (nextPage > 1) sp.set("page", String(nextPage));
+    return `#/people${sp.toString() ? "?" + sp.toString() : ""}`;
+  };
 
   $view.innerHTML = `
     <div class="h1">프로/스트리머</div>
@@ -176,6 +194,7 @@ function renderPeopleList(){
         <option value="streamer" ${type==="streamer"?"selected":""}>스트리머</option>
       </select>
       <select class="select" id="peopleRole">
+        <option value="all" ${role==="all"?"selected":""}>전체</option>
         <option value="Duelist" ${role==="Duelist"?"selected":""}>타격대</option>
         <option value="Initiator" ${role==="Initiator"?"selected":""}>척후대</option>
         <option value="Controller" ${role==="Controller"?"selected":""}>전략가</option>
@@ -185,7 +204,17 @@ function renderPeopleList(){
     </div>
 
     <div class="grid">
-      ${filtered.map(p => personCard(p)).join("") || `<div class="panel">조건에 맞는 사람이 없어요.</div>`}
+      ${pageItems.map(p => personCard(p)).join("") || `<div class="panel">조건에 맞는 사람이 없어요.</div>`}
+    </div>
+
+    <div class="pager">
+      <a class="pagerBtn ${curPage===1 ? "disabled" : ""}" href="${makeHash(curPage-1)}" aria-disabled="${curPage===1}">
+        ← 이전
+      </a>
+      <span class="pagerInfo">${curPage} / ${totalPages} · 총 ${filtered.length}명</span>
+      <a class="pagerBtn ${curPage===totalPages ? "disabled" : ""}" href="${makeHash(curPage+1)}" aria-disabled="${curPage===totalPages}">
+        다음 →
+      </a>
     </div>
   `;
 
@@ -196,9 +225,14 @@ function renderPeopleList(){
 
   const push = () => {
     const sp = new URLSearchParams();
-    if ($q.value.trim()) sp.set("q", $q.value.trim());
-    if ($type.value !== "all") sp.set("type", $type.value);
-    if ($role.value !== "all") sp.set("role", $role.value);
+    const qv = $q.value.trim();
+    const tv = $type.value;
+    const rv = $role.value;
+
+    if (qv) sp.set("q", qv);
+    if (tv !== "all") sp.set("type", tv);
+    if (rv !== "all") sp.set("role", rv);
+    // 필터가 바뀌면 1페이지로
     location.hash = `#/people${sp.toString() ? "?" + sp.toString() : ""}`;
   };
 
