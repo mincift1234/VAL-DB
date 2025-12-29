@@ -359,7 +359,7 @@ function renderPersonDetail(id){
           <div class="right"><a href="${escapeHtml(s.url)}" target="_blank" rel="noreferrer">열기</a></div>
         </div>
       `).join("")
-    : `<div class="panel small">출처가 없으면 신뢰도가 떨어져요. 최소 1개 링크는 넣어두는 걸 추천.</div>`;
+    : `<div class="panel small">프로/스트리머의 그 외 정보들(미작성).</div>`;
 
   $view.innerHTML = `
     <div class="panel">
@@ -396,7 +396,7 @@ function renderPersonDetail(id){
 
       <div class="hr"></div>
 
-      <div class="title">출처</div>
+      <div class="title">프로/스트리머의 그 외 정보들</div>
       <div class="list">${sourceHtml}</div>
     </div>
   `;
@@ -456,7 +456,7 @@ function renderGearDetail(category, id){
 }
 
 function renderNotFound(){
-  $view.innerHTML = `<div class="panel">페이지를 찾을 수 없어요. 상단 메뉴로 이동해줘.</div>`;
+  $view.innerHTML = `<div class="panel">페이지를 찾을 수 없습니다. 상단 메뉴로 이동해주세요.</div>`;
 }
 
 function route(){
