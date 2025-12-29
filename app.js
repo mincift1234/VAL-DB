@@ -48,8 +48,6 @@ fs.onAuthStateChanged(auth, async (user) => {
   $adminLink.style.display = ok ? "" : "none";
 });
 
-
-
 function escapeHtml(s=""){
   return String(s)
     .replaceAll("&","&amp;")
