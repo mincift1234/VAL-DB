@@ -322,3 +322,22 @@ select optgroup {
   }
 }
 
+/* 데스크탑/태블릿: footer 하단 고정 */
+@media (min-width: 561px){
+  body.withFooter{
+    /* fixed footer 높이만큼 콘텐츠가 가려지지 않게 */
+    padding-bottom: 110px;
+  }
+
+  body.withFooter .footer{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+
+    /* 기존 톤 유지(필요 없으면 지워도 됨) */
+    background: rgba(11,15,20,.86);
+    backdrop-filter: blur(10px);
+  }
+}
