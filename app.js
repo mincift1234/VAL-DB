@@ -631,6 +631,57 @@ $globalSearch.addEventListener("keydown", (e) => {
   }
 });
 
+// ✅ 로컬 검색(peopleQ/gearQ)은 글로벌 검색처럼 "Enter"로만 적용되도록 (기존 debounce input 가로채기)
+document.addEventListener("input", (e) => {
+  const id = e.target?.id;
+  if (id === "peopleQ" || id === "gearQ") {
+    // 기존 renderPeopleList/renderGearList에서 걸어둔 debounce(input) 실행 차단
+    e.stopImmediatePropagation();
+  }
+}, true); // capture = true
+
+document.addEventListener("keydown", (e) => {
+  const t = e.target;
+  if (!t || (t.id !== "peopleQ" && t.id !== "gearQ")) return;
+  if (e.key !== "Enter") return;
+
+  // Enter 시에만 필터 적용(= hash 갱신)
+  if (t.id === "peopleQ") {
+    const $q = document.getElementById("peopleQ");
+    const $type = document.getElementById("peopleType");
+    const $role = document.getElementById("peopleRole");
+    if (!$q || !$type || !$role) return;
+
+    const sp = new URLSearchParams();
+    const qv = $q.value.trim();
+    const tv = $type.value;
+    const rv = $role.value;
+
+    if (qv) sp.set("q", qv);
+    if (tv !== "all") sp.set("type", tv);
+    if (rv !== "all") sp.set("role", rv);
+
+    location.hash = `#/people${sp.toString() ? "?" + sp.toString() : ""}`;
+  }
+
+  if (t.id === "gearQ") {
+    const $q = document.getElementById("gearQ");
+    const $b = document.getElementById("gearBrand");
+    if (!$q || !$b) return;
+
+    // 현재 카테고리 추출: #/gear/{category}
+    const path = (location.hash || "#/").split("?")[0];
+    const parts = path.replace("#", "").split("/").filter(Boolean);
+    const category = parts[1] || "mouse";
+
+    const sp = new URLSearchParams();
+    if ($q.value.trim()) sp.set("q", $q.value.trim());
+    if ($b.value !== "all") sp.set("brand", $b.value);
+
+    location.hash = `#/gear/${category}${sp.toString() ? "?" + sp.toString() : ""}`;
+  }
+}, true);
+
 async function boot(){
   $view.innerHTML = `<div class="panel">불러오는 중...</div>`;
   try{
