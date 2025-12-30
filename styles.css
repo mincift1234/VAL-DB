@@ -288,17 +288,37 @@ select optgroup {
   text-align: center;
 }
 
-/* ✅ footer 고정은 메인(index)에서만 */
-body.withFooter{
-  padding-bottom: calc(220px + env(safe-area-inset-bottom)); /* footer 높이에 맞춰 여유 */
+/* 모바일에서는 배경 그라데이션 제거(단색) */
+@media (max-width: 560px){
+  body{
+    background: var(--bg) !important;
+  }
 }
 
-body.withFooter .footer{
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  background: rgba(11,15,20,.86);
-  backdrop-filter: blur(10px);
+/* 모바일: 장비/상세 등 어떤 페이지 구조든 footer를 항상 화면 하단에 붙이기 */
+@media (max-width: 560px){
+  body.withFooter{
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ✅ container 안에 footer가 들어있는 구조도 대응 */
+  body.withFooter .container{
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+
+  /* SPA 본문 영역(#view)이 남는 공간을 채우게 */
+  #view{
+    flex: 1 0 auto;
+  }
+
+  /* footer는 항상 맨 아래로 */
+  body.withFooter .footer{
+    margin-top: auto;
+  }
 }
+
