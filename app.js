@@ -98,7 +98,7 @@ function renderHome(){
 
   $view.innerHTML = `
     <div class="panel">
-      <div class="h1">VAL DB</div>
+      <div class="h1">VAL PS DB</div>
       <p class="p">프로/스트리머의 발로란트 장비와 설정을 모아두는 데이터베이스</p>
       <div class="small">현재 등록: 사람 ${state.people.length}명 · 장비 ${state.gear.length}개 · 마우스 ${mouseCount}개</div>
     </div>
@@ -701,3 +701,4 @@ async function boot(){
 }
 
 boot();
+
